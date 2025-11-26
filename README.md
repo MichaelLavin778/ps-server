@@ -245,6 +245,17 @@ Additionally:
 - JWT secret should be set via `JWT_SECRET` environment variable in production
 - In production, implement proper user authentication instead of the demo token generation
 
+### Production Security Considerations
+
+For production deployment, consider implementing:
+- **Rate limiting** on API endpoints to prevent abuse (e.g., using `express-rate-limit`)
+- **Input validation** middleware for all request parameters
+- **HTTPS/TLS** encryption for all communications
+- **Database connection pooling** and prepared statements (already implemented)
+- **Logging and monitoring** for security events
+- **CORS configuration** to restrict allowed origins
+- **Helmet.js** for setting security-related HTTP headers
+
 ## Environment Variables
 
 - `PORT`: Server port (default: 3000)

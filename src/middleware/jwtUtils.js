@@ -1,7 +1,15 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
-// Secret key for JWT - in production, this should be in environment variables
-const JWT_SECRET = process.env.JWT_SECRET || 'pokemon-server-secret-key-change-in-production';
+// Secret key for JWT - must be set in production
+// For development, generate a random secret if not provided
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable must be set in production');
+  }
+  console.warn('WARNING: Using generated JWT secret for development. Set JWT_SECRET environment variable for production.');
+  return crypto.randomBytes(32).toString('hex');
+})();
 const JWT_EXPIRATION = '24h';
 
 /**

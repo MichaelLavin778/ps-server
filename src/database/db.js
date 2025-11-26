@@ -74,20 +74,24 @@ function seedDatabase() {
       
       const insertQuery = 'INSERT INTO pokemon (number, name, type, hp, attack, defense, description) VALUES (?, ?, ?, ?, ?, ?, ?)';
       
-      let completed = 0;
-      samplePokemon.forEach((pokemon) => {
-        db.run(insertQuery, [pokemon.number, pokemon.name, pokemon.type, pokemon.hp, pokemon.attack, pokemon.defense, pokemon.description], (err) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          completed++;
-          if (completed === samplePokemon.length) {
-            console.log('Database seeded with sample Pokemon');
-            resolve();
-          }
+      const insertPromises = samplePokemon.map((pokemon) => {
+        return new Promise((resolveInsert, rejectInsert) => {
+          db.run(insertQuery, [pokemon.number, pokemon.name, pokemon.type, pokemon.hp, pokemon.attack, pokemon.defense, pokemon.description], (err) => {
+            if (err) {
+              rejectInsert(err);
+            } else {
+              resolveInsert();
+            }
+          });
         });
       });
+      
+      Promise.all(insertPromises)
+        .then(() => {
+          console.log('Database seeded with sample Pokemon');
+          resolve();
+        })
+        .catch(reject);
     });
   });
 }
